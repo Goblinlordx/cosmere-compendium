@@ -1,0 +1,8 @@
+.navbar a {
+  color: #222;
+  transition: all 0.3s ease;
+}
+
+.navbar a.active {
+  color: red;
+}
