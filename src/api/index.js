@@ -6,9 +6,7 @@ const dummyData = {
         id: 0,
         plural: 'Series',
         singular: 'Series',
-        children: [
-          'book'
-        ],
+        children: ['book'],
         properties: [
           {
             name: 'name',
@@ -19,9 +17,7 @@ const dummyData = {
         id: 1,
         plural: 'Books',
         singular: 'Book',
-        children: [
-          'chapter'
-        ],
+        children: ['chapter'],
       },
       {
         id: 2,
@@ -38,18 +34,15 @@ const dummyData = {
   },
   series: {
     nextId: 0,
-    entities: [
-    ]
+    entities: [],
   },
   book: {
     nextId: 0,
-    entities: [
-    ]
+    entities: [],
   },
   chapter: {
     nextId: 0,
-    entities: [
-    ]
+    entities: [],
   },
   character: {
     nextId: 1,
@@ -64,33 +57,41 @@ const dummyData = {
           {
             id: 1,
             type: 'descriptors',
-            references: [{
-              series: 0,
-              book: 0,
-              chapter: 0,
-            }],
-            links: [{
-              id: 1,
-              type: 'characters',
-              name: 'test1',
-            }],
+            references: [
+              {
+                series: 0,
+                book: 0,
+                chapter: 0,
+              },
+            ],
+            links: [
+              {
+                id: 1,
+                type: 'characters',
+                name: 'test1',
+              },
+            ],
             description: 'Test character description',
-          }
+          },
         ],
         events: [
           {
             id: 0,
             type: 'events',
-            references: [{
-              series: 0,
-              book: 0,
-              chapter: 0,
-            }],
-            links: [{
-              id: 1,
-              type: 'characters',
-              name: 'test1',
-            }],
+            references: [
+              {
+                series: 0,
+                book: 0,
+                chapter: 0,
+              },
+            ],
+            links: [
+              {
+                id: 1,
+                type: 'characters',
+                name: 'test1',
+              },
+            ],
             description: 'Test character event',
           },
         ],
@@ -102,77 +103,80 @@ const dummyData = {
           },
         ],
       },
-    ]
+    ],
   },
-}
+};
 
 class Database {
   _db = null;
-  init = Promise.resolve()
-  .then(() => {
+  init = Promise.resolve().then(() => {
     if (this._db) return this._db;
     this._db = dummyData;
   });
   _exists(type, id) {
-    return this.init
-    .then(() => {
+    return this.init.then(() => {
       if (!this._db[type]) throw new Error(`Invalid type ${type}`);
-    })
+    });
   }
   _getIdx(type, id) {
-    return this._exists(type)
-    .then(() => {
-      const idx = this._db[type].entities.findIndexOf(e => e.id === parseInt(id, 10));
-      if (idx === -1) throw new Error(`Invalid entity - type: ${type} id: ${id}`);
+    return this._exists(type).then(() => {
+      const idx = this._db[type].entities.findIndexOf(
+        e => e.id === parseInt(id, 10),
+      );
+      if (idx === -1)
+        throw new Error(`Invalid entity - type: ${type} id: ${id}`);
       return idx;
     });
   }
   getAll(type) {
-    return this._exists(type)
-    .then(() => this._db[type].entities);
+    return this._exists(type).then(() => this._db[type].entities);
   }
   add(type, def) {
-    return this._exists(type)
-    .then(() => {
+    return this._exists(type).then(() => {
       this._db[type].entities.push({...def, id: this._db[type].nextId});
       this._db[type].nextId++;
     });
   }
   get(type, id) {
-    return this._exists(type)
-    .then(() => this._db[type].entities.find(e => e.id === parseInt(id, 10)));
+    return this._exists(type).then(() =>
+      this._db[type].entities.find(e => e.id === parseInt(id, 10)));
   }
   update(type, id, update) {
-    return this._getIdx(type, id)
-    .then(idx => this._db[type].entities[idx] = update);
+    return this._getIdx(type, id).then(
+      idx => this._db[type].entities[idx] = update,
+    );
   }
   delete(type, id) {
-    return this._getIdx(type, id)
-    .then(idx => {
+    return this._getIdx(type, id).then(idx => {
       const ref = this._db[type].entities;
-      this._db[type].entities = ref.slice(0,idx).concat(ref.slice(idx+1));
+      this._db[type].entities = ref.slice(0, idx).concat(ref.slice(idx + 1));
       return true;
-    })
+    });
   }
   addType(type = {}) {
     const {singular, plural} = type;
     return Promise.resolve()
-    .then(() => {
-      if (!singular || !plural) throw new Error(`Invalid singular or plural name`);
-      return this.getAll('type');
-    })
-    .then(types => {
-      const names = [singular, plural]
-      const exists = types.some(t => [t.singular, t.plural].some(n => names.some(nn => nn.toLowerCase() === n.toLowerCase())));
-      if (exists) throw new Error(`Type with name ${singular} or ${plural} already exists`);
-      return this.add('type', type);
-    })
-    .then(() => this._db[type.singular] = {nextId: 0, entities:[]})
+      .then(() => {
+        if (!singular || !plural)
+          throw new Error(`Invalid singular or plural name`);
+        return this.getAll('type');
+      })
+      .then(types => {
+        const names = [singular, plural];
+        const exists = types.some(t =>
+          [t.singular, t.plural].some(n =>
+            names.some(nn => nn.toLowerCase() === n.toLowerCase())));
+        if (exists)
+          throw new Error(
+            `Type with name ${singular} or ${plural} already exists`,
+          );
+        return this.add('type', type);
+      })
+      .then(() => this._db[type.singular] = {nextId: 0, entities: []});
   }
 }
 
 const DB = new Database();
-
 
 export function getIndex(typeStr) {
   return DB.getAll(typeStr);

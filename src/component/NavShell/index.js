@@ -6,41 +6,43 @@ import './styles.css';
 class NavShell extends Component {
   state = {};
   componentDidMount() {
-    getTypes()
-    .then(types => {
+    getTypes().then(types => {
       console.log(types);
-      this.setState({types})
-    })
+      this.setState({types});
+    });
   }
   render() {
     const {children} = this.props;
     const {types} = this.state;
-    return ([
+    return [
       <section>
-        <nav className='navbar'>
+        <nav className="navbar">
           <ul>
-            <li key='home'>
-              <NavLink exact to='/' activeClassName='active'>Home</NavLink>
+            <li key="home">
+              <NavLink exact to="/" activeClassName="active">Home</NavLink>
             </li>
-            <li key='admin'>
-              <NavLink exact to='/admin' activeClassName='active'>Admin</NavLink>
+            <li key="admin">
+              <NavLink exact to="/admin" activeClassName="active">
+                Admin
+              </NavLink>
             </li>
-            {
-              types && types.map(type => !type.child && (
-                <li key={type.singular}>
-                  <NavLink to={`/${type.singular.toLowerCase()}`}>
-                    {type.plural}
-                  </NavLink>
-                </li>
-              ))
-            }
+            {types &&
+              types.map(
+                type =>
+                  !type.child &&
+                  <li key={type.singular}>
+                    <NavLink to={`/${type.singular.toLowerCase()}`}>
+                      {type.plural}
+                    </NavLink>
+                  </li>,
+              )}
           </ul>
         </nav>
       </section>,
       <section>
         {children}
-      </section>
-    ])
+      </section>,
+    ];
   }
 }
 

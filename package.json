@@ -55,7 +55,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "flow": "flow",
-    "fmt": "prettier --single-quote --bracket-spacing false --trailing-comma all --color --write \"!(public)/**/*.js\""
+    "fmt": "prettier --single-quote --bracket-spacing false --trailing-comma all --color --write \"src/**/*.js\""
   },
   "jest": {
     "collectCoverageFrom": [

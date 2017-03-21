@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
 import NavShell from '../NavShell';
 import Home from '../Home';
 import Admin from '../Admin';
@@ -13,12 +18,12 @@ class App extends Component {
       <Router>
         <NavShell>
           <Switch>
-            <Route exact path='/404' component={NotFound}/>
-            <Route exact path='/' component={Home}/>
-            <Route exact path='/admin' component={Admin}/>
-            <Route exact path='/:type' component={TypeIndex}/>
-            <Route path='/:type/:id' component={TypeView}/>
-            <Redirect to='/404'/>
+            <Route exact path="/404" component={NotFound} />
+            <Route exact path="/" component={Home} />
+            <Route exact path="/admin" component={Admin} />
+            <Route exact path="/:type" component={TypeIndex} />
+            <Route path="/:type/:id" component={TypeView} />
+            <Redirect to="/404" />
           </Switch>
         </NavShell>
       </Router>
