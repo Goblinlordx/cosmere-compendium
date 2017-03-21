@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Switch, Route, Redirect, NavLink} from 'react-router-dom';
 import {getInstance} from '../../api';
+import createRecursiveRoute from '../../util/createRecursiveRoute';
 
 const has = (c, str) => {
   if (c[str] instanceof Array) return c[str] && c[str].length > 0;
@@ -25,8 +26,8 @@ class TypeRenderer extends Component {
     return this.loadInstance(type, id);
   }
   componentWillUpdate(next) {
-    const {url: currentUrl} = this.props;
-    const {url: nextUrl} = next;
+    const {match: {url: currentUrl}} = this.props;
+    const {match: {url: nextUrl}} = next;
     if (currentUrl !== nextUrl) {
       const {path} = this.props;
       const {type, id} = path[path.length - 1];
@@ -34,13 +35,12 @@ class TypeRenderer extends Component {
     }
   }
   render() {
-    const {path, url} = this.props;
+    const {path, match: {url}} = this.props;
     const {loading, instance: c} = this.state;
     if (loading) {
       return <section>Loading</section>;
     }
     if (!c) return <Redirect to="/404" />;
-    console.log(path);
     return (
       <section>
         <h1>{c.name}</h1>
@@ -90,26 +90,10 @@ class TypeRenderer extends Component {
   }
 }
 
-class TypeView extends Component {
-  render() {
-    if (false) return <Redirect to="/404" />;
-    const {match: {url, params: {type, id}}, parentPath = []} = this.props;
-    const path = parentPath.concat({type, id});
-    return (
-      <Switch>
-        <Route
-          exact={true}
-          path={url}
-          render={() => <TypeRenderer path={path} url={url} />}
-        />
-        <Route
-          path={`${url}/:type/:id`}
-          render={({match}) => <TypeView match={match} parentPath={path} />}
-        />
-        <Redirect path="/404" />
-      </Switch>
-    );
-  }
-}
+const TypeRoute = createRecursiveRoute({
+  recurse: '/:type/:id',
+  errRedirect: '/404',
+  component: TypeRenderer,
+});
 
-export default TypeView;
+export default TypeRoute;
