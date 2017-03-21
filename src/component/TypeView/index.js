@@ -1,104 +1,6 @@
 import React, {Component} from 'react';
 import {Switch, Route, Redirect, NavLink} from 'react-router-dom';
-
-const dummy = [
-  {
-    id: 0,
-    name: 'Character Name',
-    class: 'Human',
-    subclass: 'Male',
-    physicalDesc: 'Description of character',
-    descriptors: [
-      {
-        id: 1,
-        type: 'descriptors',
-        references: [{
-          series: 0,
-          book: 0,
-          chapter: 0,
-        }],
-        links: [{
-          id: 1,
-          type: 'characters',
-          name: 'test1',
-        }],
-        description: 'Test character description',
-      }
-    ],
-    events: [
-      {
-        id: 0,
-        type: 'events',
-        references: [{
-          series: 0,
-          book: 0,
-          chapter: 0,
-        }],
-        links: [{
-          id: 1,
-          type: 'characters',
-          name: 'test1',
-        }],
-        description: 'Test character event',
-      },
-    ],
-    children: [
-      {
-        id: 1,
-        type: 'characters',
-        name: 'test1',
-      },
-    ],
-  },
-  {
-    id: 1,
-    name: 'Character Name',
-    class: 'Human',
-    subclass: 'Male',
-    physicalDesc: 'Description of character',
-    descriptors: [
-      {
-        id: 1,
-        type: 'descriptors',
-        references: [{
-          series: 0,
-          book: 0,
-          chapter: 0,
-        }],
-        links: [{
-          id: 1,
-          type: 'characters',
-          name: 'test1',
-        }],
-        description: 'Test character description',
-      }
-    ],
-    events: [
-      {
-        id: 0,
-        type: 'events',
-        references: [{
-          series: 0,
-          book: 0,
-          chapter: 0,
-        }],
-        links: [{
-          id: 1,
-          type: 'characters',
-          name: 'test1',
-        }],
-        description: 'Test character event',
-      },
-    ],
-    children: [
-      {
-        id: 1,
-        type: 'characters',
-        name: 'test1',
-      },
-    ],
-  },
-]
+import {getInstance} from '../../api';
 
 const has = (c, str) => {
   if (c[str] instanceof Array) return c[str] && c[str].length > 0;
@@ -106,10 +8,40 @@ const has = (c, str) => {
 }
 
 class TypeRenderer extends Component {
+  state = {
+    loading: true,
+  };
+  loadInstance(type, id) {
+    return getInstance(type, id)
+    .then(instance => {
+      this.setState({
+        loading: false,
+        instance,
+      })
+    })
+  }
+  componentDidMount() {
+    const {path} = this.props
+    const {type, id} = path[path.length - 1];
+    return this.loadInstance(type, id);
+  }
+  componentWillUpdate(next) {
+    const {url: currentUrl} = this.props;
+    const {url: nextUrl} = next;
+    if (currentUrl !== nextUrl) {
+      const {path} = this.props
+      const {type, id} = path[path.length - 1];
+      this.loadInstance(type, id);
+    }
+  }
   render() {
-    const {url, type, id} = this.props;
-    console.log(url, type, id);
-    const c = dummy.find(char => char.id === (id|0));
+    const {path, url} = this.props;
+    const {loading, instance: c} = this.state;
+    if (loading) {
+        return <section>Loading</section>;
+    }
+    if (!c) return <Redirect to='/404'/>
+    console.log(path);
     return (
       <section>
         <h1>{c.name}</h1>
@@ -165,31 +97,18 @@ class TypeRenderer extends Component {
   }
 }
 
-class SubTypeRenderer extends Component {
-  render() {
-    const {url, parentType} = this.props;
-    return (
-      <section>
-        <nav>
-          <NavLink to={url}>{parentType}</NavLink>
-        </nav>
-        <Route path={`${url}/:type/:id`} component={TypeView}/>
-      </section>
-    )
-  }
-}
-
 class TypeView extends Component {
   render() {
     if (false) return <Redirect to='/404'/>;
-
-    const {match:{url, params:{type, id}}} = this.props;
+    const {match:{url, params:{type, id}}, parentPath = []} = this.props;
+    const path = parentPath.concat({type, id})
     return (
       <Switch>
         <Route exact={true} path={url} render={() => (
-          <TypeRenderer url={url} type={type} id={id}/>
+          <TypeRenderer path={path} url={url}/>
         )} />
-        <Route path={`${url}`} render={() => <SubTypeRenderer parentType={type} url={url}/>} />
+        <Route path={`${url}/:type/:id`} render={({match}) => <TypeView match={match} parentPath={path}/>} />
+        <Redirect path='/404'/>
       </Switch>
     )
   }

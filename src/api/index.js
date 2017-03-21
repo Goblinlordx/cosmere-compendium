@@ -96,8 +96,8 @@ const dummyData = {
         ],
         children: [
           {
-            id: 1,
-            type: 'characters',
+            id: 0,
+            type: 'character',
             name: 'test1',
           },
         ],
@@ -107,8 +107,10 @@ const dummyData = {
 }
 
 class Database {
+  _db = null;
   init = Promise.resolve()
   .then(() => {
+    if (this._db) return this._db;
     this._db = dummyData;
   });
   _exists(type, id) {
@@ -165,6 +167,7 @@ class Database {
       if (exists) throw new Error(`Type with name ${singular} or ${plural} already exists`);
       return this.add('type', type);
     })
+    .then(() => this._db[type.singular] = {nextId: 0, entities:[]})
   }
 }
 
@@ -177,62 +180,9 @@ export function getIndex(typeStr) {
 export function getTypes() {
   return getIndex('type');
 }
-
-export function getType(typeStr = '') {
+export function addType(def) {
+  return DB.addType(def);
 }
-
-const indexes = {
-  series: [
-    {
-      id: 0,
-      name: 'test1',
-    },
-    {
-      id: 1,
-      name: 'test2',
-    },
-  ],
-  book: [
-    {
-      id: 0,
-      name: 'test1',
-    },
-    {
-      id: 1,
-      name: 'test2',
-    },
-  ],
-  chapter: [
-    {
-      id: 0,
-      name: 'test1',
-    },
-    {
-      id: 1,
-      name: 'test2',
-    },
-  ],
-  character: [
-    {
-      id: 0,
-      name: 'test1',
-    },
-    {
-      id: 1,
-      name: 'test2',
-    },
-  ]
-}
-
-const loadingIndexes = {
-}
-export function loadIndex(typeStr) {
-  return getType(typeStr)
-  .then(type => {
-    if (!type) return null
-    const loading = loadingIndexes[typeStr]
-    if (loading) return loading;
-    // Types = get('/api/types');
-    return loadingIndexes[typeStr] = new Promise(resolve => setTimeout(() => resolve(indexes[typeStr])), 1500);
-  })
+export function getInstance(type, id) {
+  return DB.get(type, id);
 }

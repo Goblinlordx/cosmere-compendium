@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Redirect, NavLink} from 'react-router-dom';
-import {getTypes, getIndex} from '../../api';
+import {getIndex} from '../../api';
 
 class TypeLink extends Component {
   render() {

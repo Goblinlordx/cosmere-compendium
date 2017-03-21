@@ -22,6 +22,9 @@ class NavShell extends Component {
             <li key='home'>
               <NavLink exact to='/' activeClassName='active'>Home</NavLink>
             </li>
+            <li key='admin'>
+              <NavLink exact to='/admin' activeClassName='active'>Admin</NavLink>
+            </li>
             {
               types && types.map(type => !type.child && (
                 <li key={type.singular}>
