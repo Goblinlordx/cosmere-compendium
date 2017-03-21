@@ -1,10 +1,16 @@
 import React from 'react';
 import {Redirect, Switch, Route} from 'react-router-dom';
 
-const createRecursiveRoute = opts => {
-  const {recurse, maxDepth = 10, errRedirect, component, render} = opts;
+const RecursiveRoute = baseProps => {
+  const {
+    path: recurse,
+    maxDepth = 10,
+    errRedirect,
+    component,
+    render,
+  } = baseProps;
   const Renderer = component || render;
-  if (!Renderer) throw new Error('No render function or component provided');
+  if (!Renderer) throw new Error('No component or render property passed');
   if (!recurse) throw new Error('Invalid recurse route property');
   const err = errRedirect && <Redirect to={errRedirect} />;
   const Recurser = props => {
@@ -21,15 +27,15 @@ const createRecursiveRoute = opts => {
         />
         <Route
           path={`${url}${recurse}`}
-          render={({match: nextMatch}) => (
-            <Recurser match={nextMatch} parentPath={path} />
+          render={recurseProps => (
+            <Recurser {...recurseProps} parentPath={path} />
           )}
         />
         {err}
       </Switch>
     );
   };
-  return Recurser;
+  return <Route path={recurse} component={Recurser} />;
 };
 
-export default createRecursiveRoute;
+export default RecursiveRoute;

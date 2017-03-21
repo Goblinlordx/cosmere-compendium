@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {Switch, Route, Redirect, NavLink} from 'react-router-dom';
+import {Redirect, NavLink} from 'react-router-dom';
 import {getInstance} from '../../api';
-import createRecursiveRoute from '../../util/createRecursiveRoute';
 
 const has = (c, str) => {
   if (c[str] instanceof Array) return c[str] && c[str].length > 0;
@@ -35,7 +34,7 @@ class TypeRenderer extends Component {
     }
   }
   render() {
-    const {path, match: {url}} = this.props;
+    const {match: {url}} = this.props;
     const {loading, instance: c} = this.state;
     if (loading) {
       return <section>Loading</section>;
@@ -90,10 +89,4 @@ class TypeRenderer extends Component {
   }
 }
 
-const TypeRoute = createRecursiveRoute({
-  recurse: '/:type/:id',
-  errRedirect: '/404',
-  component: TypeRenderer,
-});
-
-export default TypeRoute;
+export default TypeRenderer;

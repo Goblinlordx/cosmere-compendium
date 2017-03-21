@@ -10,7 +10,8 @@ import Home from '../Home';
 import Admin from '../Admin';
 import NotFound from '../NotFound';
 import TypeIndex from '../TypeIndex';
-import TypeView from '../TypeView';
+import TypeRenderer from '../TypeRenderer';
+import RecursiveRoute from '../RecursiveRoute';
 
 class App extends Component {
   render() {
@@ -22,7 +23,11 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/admin" component={Admin} />
             <Route exact path="/:type" component={TypeIndex} />
-            <Route path="/:type/:id" component={TypeView} />
+            <RecursiveRoute
+              path="/:type/:id"
+              errRedirect="/404"
+              component={TypeRenderer}
+            />
             <Redirect to="/404" />
           </Switch>
         </NavShell>
