@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Redirect, NavLink} from 'react-router-dom';
-import {getInstance} from '../../api';
+import React, { Component } from 'react';
+import { Redirect, NavLink } from 'react-router-dom';
+import { getInstance } from '../../api';
 
 const has = (c, str) => {
   if (c[str] instanceof Array) return c[str] && c[str].length > 0;
@@ -20,22 +20,22 @@ class TypeRenderer extends Component {
     });
   }
   componentDidMount() {
-    const {path} = this.props;
-    const {type, id} = path[path.length - 1];
+    const { path } = this.props;
+    const { type, id } = path[path.length - 1];
     return this.loadInstance(type, id);
   }
   componentWillUpdate(next) {
-    const {match: {url: currentUrl}} = this.props;
-    const {match: {url: nextUrl}} = next;
+    const { match: { url: currentUrl } } = this.props;
+    const { match: { url: nextUrl } } = next;
     if (currentUrl !== nextUrl) {
-      const {path} = this.props;
-      const {type, id} = path[path.length - 1];
+      const { path } = this.props;
+      const { type, id } = path[path.length - 1];
       this.loadInstance(type, id);
     }
   }
   render() {
-    const {match: {url}} = this.props;
-    const {loading, instance: c} = this.state;
+    const { match: { url } } = this.props;
+    const { loading, instance: c } = this.state;
     if (loading) {
       return <section>Loading</section>;
     }
