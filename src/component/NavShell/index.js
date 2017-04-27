@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AppBar from 'material-ui/AppBar';
 import { NavLink } from 'react-router-dom';
 import { getTypes } from '../../api';
 import './styles.css';
@@ -15,6 +16,7 @@ class NavShell extends Component {
     const { types } = this.state;
     return (
       <div>
+        <AppBar title="Cosmere Compendium" />
         <section>
           <nav className="navbar">
             <ul>
