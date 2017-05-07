@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
+import firebase from 'lib/firebase';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { initApp } from 'action/init';
-
-const { firebase } = window;
-console.log(firebase);
 
 const Container = BaseComponent => {
   class InitContainer extends Component {
@@ -27,6 +26,7 @@ const Container = BaseComponent => {
   InitContainer = connect(({ init }) => ({ init }), mapDispatchToProps)(
     InitContainer
   );
+  InitContainer = withRouter(InitContainer);
   return InitContainer;
 };
 

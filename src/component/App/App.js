@@ -11,21 +11,11 @@ import {
   darkBlack,
   grey300,
 } from 'material-ui/styles/colors';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import store from 'store';
 import InitShell from 'component/Shell/Init';
-import NavShell from '../NavShell';
-import Home from '../Home';
-import Admin from '../Admin';
-import NotFound from '../NotFound';
-import TypeIndex from '../TypeIndex';
-import TypeRenderer from '../TypeRenderer';
-import RecursiveRoute from '../RecursiveRoute';
+import NavShell from 'component/NavShell';
+import MainContent from 'component/MainContent';
 
 injectTapEventPlugin();
 
@@ -49,18 +39,7 @@ class App extends Component {
           <MuiThemeProvider muiTheme={getMuiTheme(baseTheme)}>
             <InitShell>
               <NavShell>
-                <Switch>
-                  <Route exact path="/404" component={NotFound} />
-                  <Route exact path="/" component={Home} />
-                  <Route exact path="/admin" component={Admin} />
-                  <Route exact path="/:type" component={TypeIndex} />
-                  <RecursiveRoute
-                    path="/:type/:id"
-                    errRedirect="/404"
-                    component={TypeRenderer}
-                  />
-                  <Redirect to="/404" />
-                </Switch>
+                <MainContent />
               </NavShell>
             </InitShell>
           </MuiThemeProvider>

@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Card, CardTitle } from 'material-ui/Card';
 
-const Home = () => (
-  <section>
-    <h1>Home</h1>
-  </section>
-);
+class Home extends Component {
+  render() {
+    return (
+      <div>
+        <Card>
+          <CardTitle
+            title="Introduction"
+            subtitle="Welcome to the Cosmere Compendium"
+          />
+        </Card>
+      </div>
+    );
+  }
+}
 
 export default Home;

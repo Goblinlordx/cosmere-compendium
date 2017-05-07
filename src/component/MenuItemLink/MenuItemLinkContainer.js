@@ -1,5 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { closeNav } from 'action/navdrawer';
 
 const mapDispatchToProps = dispatch => ({
@@ -7,6 +8,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const MenuItemLinkContainer = BaseComponent =>
-  connect(null, mapDispatchToProps)(BaseComponent);
+  withRouter(connect(null, mapDispatchToProps)(BaseComponent));
 
 export default MenuItemLinkContainer;
